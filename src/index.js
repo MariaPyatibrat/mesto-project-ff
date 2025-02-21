@@ -4,7 +4,7 @@ import { createCard, handleDeleteCard, handleLikeCard } from './components/card.
 import { openModal, closePopup, addCloseButtonListeners, addPopupEventListeners } from './components/modal.js';
 
 // Контейнер для карточек
-const placesList = document.querySelector('.places__list');
+const placesList = document.querySelector('.places__list') ;
 
 // Модальные окна
 const editProfileModal = document.querySelector('.popup_type_edit');

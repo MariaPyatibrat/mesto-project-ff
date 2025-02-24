@@ -19,6 +19,25 @@
   cursor: pointer;
 }
 
+.popup__button_disabled {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21.78px;
+  background-color: transparent;
+  color: #000000;
+  border: 1px solid #000000;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.popup__button_disabled:hover {
+  /* На неактивной кнопке не будет происходить никаких изменений на hover */
+  background-color: transparent;
+  color: #000000;
+  border: 1px solid #000000;
+  opacity: 0.5;
+}
 @media screen and (max-width: 568px) {
   .popup__button {
     font-size: 14px;

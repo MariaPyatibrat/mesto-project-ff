@@ -2,9 +2,10 @@ import './pages/index.css';
 import initialCards from './scripts/cards';
 import { createCard, handleDeleteCard, handleLikeCard } from './components/card.js';
 import { openModal, closePopup, addCloseButtonListeners, addPopupEventListeners } from './components/modal.js';
+import { enableValidation, clearValidation } from "./components/validation.js";
 
 // Контейнер для карточек
-const placesList = document.querySelector('.places__list') ;
+const placesList = document.querySelector('.places__list');
 
 // Модальные окна
 const editProfileModal = document.querySelector('.popup_type_edit');
@@ -43,11 +44,21 @@ editProfileButtonElement.addEventListener('click', () => {
     openModal(editProfileModal);
     nameInput.value = profileNameElement.textContent;
     jobInput.value = profileDescriptionElement.textContent;
+
+    // Очищаем ошибки валидации перед открытием
+    clearValidation(editProfileForm, validationConfig);
 });
 
 // Открытие попапа для добавления новой карточки
 addCardButtonElement.addEventListener('click', () => {
     openModal(addCardModal);
+
+    // Очищаем форму и ошибки валидации
+    addCardFormElement.reset();
+    clearValidation(addCardFormElement, validationConfig); // Сбросить ошибки
+    const submitButton = addCardFormElement.querySelector('.popup__button');
+    submitButton.disabled = true;
+    submitButton.classList.add(validationConfig.inactiveButtonClass);
 });
 
 // Находим форму и поля формы для добавления новой карточки
@@ -108,6 +119,30 @@ editProfileForm.addEventListener('submit', handleProfileFormSubmit);
 // Добавляем обработчики для попапов
 addPopupEventListeners();
 addCloseButtonListeners();
+
+// Валидация формы
+const validationConfig = {
+    formSelector: ".popup__form",
+    inputSelector: ".popup__input",
+    submitButtonSelector: ".popup__button",
+    inactiveButtonClass: "popup__button_disabled",
+    inputErrorClass: "popup__input_type_error",
+    errorClass: "popup__error_visible"
+};
+
+// Включаем валидацию
+document.addEventListener("DOMContentLoaded", () => {
+    enableValidation(validationConfig);
+
+    const profileForm = document.querySelector(".popup__form[name='edit-profile']");
+    const editProfileButtonElement = document.querySelector(".profile__edit-button");
+
+    editProfileButtonElement.addEventListener("click", () => {
+        clearValidation(profileForm, validationConfig);
+    });
+});
+
+
 
 
 

@@ -14,6 +14,19 @@
   margin-bottom: 0;
 }
 
+/* Стили для сообщения об ошибке */
+.popup__error {
+  color: #FF0000;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14.52px;
+}
+.popup__input_type_error {
+  border-bottom: 1px solid #FF0000;
+  outline: none;
+}
+
 @media screen and (max-width: 568px) {
   .popup__title {
     font-size: 12px;

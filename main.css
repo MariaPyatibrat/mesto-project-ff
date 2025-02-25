@@ -867,6 +867,19 @@ template {
   margin-bottom: 0;
 }
 
+/* Стили для сообщения об ошибке */
+.popup__error {
+  color: #FF0000;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14.52px;
+}
+.popup__input_type_error {
+  border-bottom: 1px solid #FF0000;
+  outline: none;
+}
+
 @media screen and (max-width: 568px) {
   .popup__title {
     font-size: 12px;
@@ -895,6 +908,25 @@ template {
   cursor: pointer;
 }
 
+.popup__button_disabled {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21.78px;
+  background-color: transparent;
+  color: #000000;
+  border: 1px solid #000000;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.popup__button_disabled:hover {
+  /* На неактивной кнопке не будет происходить никаких изменений на hover */
+  background-color: transparent;
+  color: #000000;
+  border: 1px solid #000000;
+  opacity: 0.5;
+}
 @media screen and (max-width: 568px) {
   .popup__button {
     font-size: 14px;

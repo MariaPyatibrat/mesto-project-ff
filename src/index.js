@@ -53,18 +53,15 @@ function openImagePopup(imageSrc, imageAlt) {
 }
 
 function handleDeleteCardClick(cardElement, cardId) {
-    openModal(confirmDeletePopup);
-    confirmDeletePopup.querySelector('.popup__button').onclick = () => {
-        deleteCard(cardId) // Используем cardId для удаления через API
-            .then(() => {
-                cardElement.remove(); // Удаляем карточку из DOM
-                closePopup(confirmDeletePopup); // Закрываем попап
-            })
-            .catch(error => {
-                console.error('Ошибка при удалении карточки:', error);
-            });
-    };
+    deleteCard(cardId)
+        .then(() => {
+            cardElement.remove();
+        })
+        .catch(error => {
+            console.error('Ошибка при удалении карточки:', error);
+        });
 }
+
 
 // Функция рендеринга карточек
 function renderCards(cards) {
@@ -89,13 +86,13 @@ function renderUserData(userData) {
 // Функция для обработки кнопки с состоянием загрузки
 function toggleButtonState(button, isLoading) {
     if (isLoading) {
-        button.textContent = 'Сохранение...';  // Изменение текста на "Сохранение..."
-        button.disabled = true;  // Отключаем кнопку, чтобы предотвратить многократные клики
-        button.classList.add('button_loading');  // Добавление класса для отображения индикатора загрузки
+        button.textContent = 'Сохранение...';
+        button.disabled = true;
+        button.classList.add('button_loading');
     } else {
-        button.textContent = 'Сохранить';  // Восстанавливаем исходный текст
-        button.disabled = false;  // Включаем кнопку обратно
-        button.classList.remove('button_loading');  // Убираем класс индикатора загрузки
+        button.textContent = 'Сохранить';
+        button.disabled = false;
+        button.classList.remove('button_loading');
     }
 }
 
@@ -125,9 +122,9 @@ addCardButtonElement.addEventListener('click', () => {
 
 // Обработчик открытия попапа редактирования аватара
 avatarEditButtonElement.addEventListener('click', () => {
-    avatarInput.value = ''; // Очистить поле ввода
-    clearValidation(avatarForm, validationConfig); // Очистить валидацию
-    openModal(avatarPopup);  // Открываем попап для изменения аватара
+    avatarInput.value = '';
+    clearValidation(avatarForm, validationConfig);
+    openModal(avatarPopup);
 });
 
 // Обработчик отправки формы редактирования профиля
@@ -136,9 +133,9 @@ function handleProfileFormSubmit(evt) {
     const name = nameInput.value.trim();
     const description = jobInput.value.trim();
 
-    const submitButton = editProfileForm.querySelector('.popup__button');  // Кнопка отправки формы
+    const submitButton = editProfileForm.querySelector('.popup__button');
 
-    toggleButtonState(submitButton, true);  // Устанавливаем состояние загрузки кнопки
+    toggleButtonState(submitButton, true);
 
     updateUserData({ name, about: description })
         .then(updatedUserData => {
@@ -149,7 +146,7 @@ function handleProfileFormSubmit(evt) {
             console.error('Ошибка при обновлении профиля:', error);
         })
         .finally(() => {
-            toggleButtonState(submitButton, false);  // Возвращаем кнопку в исходное состояние
+            toggleButtonState(submitButton, false);
         });
 }
 editProfileForm.addEventListener('submit', handleProfileFormSubmit);
@@ -194,16 +191,14 @@ function handleAvatarFormSubmit(evt) {
         return;
     }
 
-    const submitButton = avatarForm.querySelector('.popup__button');  // Кнопка отправки формы
+    const submitButton = avatarForm.querySelector('.popup__button');
 
-    toggleButtonState(submitButton, true);  // Устанавливаем состояние загрузки кнопки
+    toggleButtonState(submitButton, true);
 
     updateAvatar(avatarUrl)
         .then(updatedUserData => {
-            // Обновляем аватар в профиле
             renderUserData(updatedUserData);
 
-            // Закрываем попап после успешного обновления
             closePopup(avatarPopup);
         })
         .catch(error => {
@@ -211,7 +206,7 @@ function handleAvatarFormSubmit(evt) {
             alert('Ошибка при обновлении аватара');
         })
         .finally(() => {
-            toggleButtonState(submitButton, false);  // Возвращаем кнопку в исходное состояние
+            toggleButtonState(submitButton, false);
         });
 }
 

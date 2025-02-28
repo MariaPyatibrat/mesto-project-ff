@@ -64,16 +64,15 @@ export function handleLikeCard(likeButton, cardId) {
 
 // Функция для обработки удаления карточки
 export function handleDeleteCard(cardElement, cardId) {
-    if (confirm('Вы уверены, что хотите удалить эту карточку?')) {
-        deleteCard(cardId)
-            .then(() => {
-                cardElement.remove();
-            })
-            .catch(error => {
-                console.error('Ошибка при удалении карточки:', error);
-            });
-    }
+    deleteCard(cardId)
+        .then(() => {
+            cardElement.remove();
+        })
+        .catch(error => {
+            console.error('Ошибка при удалении карточки:', error);
+        });
 }
+
 
 
 

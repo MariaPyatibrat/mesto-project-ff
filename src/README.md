@@ -1,1 +1,1 @@
-https://github.com/MariaPyatibrat/mesto-project-ff
+https://mariapyatibrat.github.io/mesto-project-ff/

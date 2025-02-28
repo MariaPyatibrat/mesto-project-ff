@@ -11,7 +11,7 @@
   border-radius: 2px;
   border: none;
   transition: visibility 0s, background 0.3s;
-  margin-top: 48px;
+  margin-top: 10px;
 }
 
 .popup__button:hover {
@@ -32,11 +32,14 @@
 }
 
 .popup__button_disabled:hover {
-  /* На неактивной кнопке не будет происходить никаких изменений на hover */
   background-color: transparent;
   color: #000000;
   border: 1px solid #000000;
   opacity: 0.5;
+}
+
+.button_loading {
+  cursor: not-allowed;
 }
 @media screen and (max-width: 568px) {
   .popup__button {

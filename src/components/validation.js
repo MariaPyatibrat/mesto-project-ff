@@ -1,126 +1,103 @@
-export function validateField(input, inputRegex, errorMessage, config) {
+// Функция для валидации поля с использованием встроенных свойств input.validity
+export function validateField(input, errorMessage, config) {
     const errorElement = document.querySelector(`#${input.name}-error`);
+    const value = input.value.trim(); // Убираем лишние пробелы
 
-    // Проверка на незаполненность
-    if (!input.value.trim()) {
+    // Проверка на обязательность заполнения
+    if (input.validity.valueMissing) {
         errorElement.textContent = "Вы пропустили это поле.";
-        errorElement.classList.add(config.errorClass);
-        input.classList.add(config.inputErrorClass);
+        showError(input, errorElement, config);
         return false;
     }
 
     // Проверка на минимальную длину
-    if (input.value.trim().length < 2) {
-        errorElement.textContent = `Минимальное количество символов: 2. Длина текста сейчас: ${input.value.trim().length} символов`;
-        errorElement.classList.add(config.errorClass);
-        input.classList.add(config.inputErrorClass);
+    if (input.validity.tooShort) {
+        errorElement.textContent = `Минимальное количество символов: ${input.minLength}. Длина текста сейчас: ${value.length} символов.`;
+        showError(input, errorElement, config);
         return false;
     }
 
     // Проверка на максимальную длину
-    const maxLength = input.name === "place-name" ? 30 : 200;
-    if (input.value.trim().length > maxLength) {
-        errorElement.textContent = `Максимальная длина: ${maxLength} символов. Длина текста сейчас: ${input.value.trim().length} символов`;
-        errorElement.classList.add(config.errorClass);
-        input.classList.add(config.inputErrorClass);
+    if (input.validity.tooLong) {
+        errorElement.textContent = `Максимальная длина: ${input.maxLength} символов. Длина текста сейчас: ${value.length} символов.`;
+        showError(input, errorElement, config);
         return false;
     }
 
-    // Проверка на соответствие регулярному выражению
-    if (inputRegex && !inputRegex.test(input.value)) {
+    // Проверка на соответствие регулярному выражению patternMismatch
+    if (input.validity.patternMismatch) {
         errorElement.textContent = errorMessage || "Некорректный ввод.";
-        errorElement.classList.add(config.errorClass);
-        input.classList.add(config.inputErrorClass);
+        showError(input, errorElement, config);
         return false;
     }
 
-    // Если все проверки пройдены
-    errorElement.textContent = "";
-    errorElement.classList.remove(config.errorClass);
-    input.classList.remove(config.inputErrorClass);
+    clearError(input, errorElement, config);
     return true;
 }
 
-export function validateUrl(input, config) {
-    const errorElement = document.querySelector(`#${input.name}-error`);
+// Функция для показа ошибки
+function showError(input, errorElement, config) {
+    errorElement.classList.add(config.errorClass);
+    input.classList.add(config.inputErrorClass);
+}
 
-    // Проверка на незаполненность
-    if (!input.value.trim()) {
-        errorElement.textContent = "Вы пропустили это поле.";
-        errorElement.classList.add(config.errorClass);
-        input.classList.add(config.inputErrorClass);
-        return false;
-    }
-
-    const urlPattern = /^(https?:\/\/[^\s]+)$/;
-    if (!urlPattern.test(input.value)) {
-        errorElement.textContent = "Введите адрес сайта";
-        errorElement.classList.add(config.errorClass);
-        input.classList.add(config.inputErrorClass);
-        return false;
-    }
-
-    // Если все проверки пройдены
+// Функция для очистки ошибки
+function clearError(input, errorElement, config) {
     errorElement.textContent = "";
     errorElement.classList.remove(config.errorClass);
     input.classList.remove(config.inputErrorClass);
-    return true;
 }
 
-export function validateForm(form, config) {
-    const inputs = Array.from(form.querySelectorAll(config.inputSelector));
-    const submitButton = form.querySelector(config.submitButtonSelector);
-    let isValid = true;
-
-    inputs.forEach((input) => {
-        let regex = null;
-        let errorMessage = null;
-
-        if (input.name === "place-name" || input.name === "name") {
-            regex = /^[A-Za-zА-Яа-яЁё\- ]+$/;
-            errorMessage = "Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы";
-        }
-
-        if (input.name === "link") {
-            if (!validateUrl(input, config)) {
-                isValid = false;
-            }
-            return;
-        }
-
-        if (!validateField(input, regex, errorMessage, config)) {
-            isValid = false;
-        }
-    });
-
-    submitButton.disabled = !isValid;
-    submitButton.classList.toggle(config.inactiveButtonClass, !isValid);
+// Функция для изменения состояния кнопки отправки
+export function toggleSubmitButtonState(button, inputs, config) {
+    const isValid = inputs.every((input) => input.validity.valid);
+    button.disabled = !isValid;
+    button.classList.toggle(config.inactiveButtonClass, !isValid);
 }
 
+// Функция для инициализации валидации
 export function enableValidation(config) {
     const forms = document.querySelectorAll(config.formSelector);
 
     forms.forEach((form) => {
-        form.addEventListener("input", () => validateForm(form, config));
-        validateForm(form, config); // Проверка формы при загрузке
+        const inputs = Array.from(form.querySelectorAll(config.inputSelector));
+        const submitButton = form.querySelector(config.submitButtonSelector);
+
+        inputs.forEach((input) => {
+            input.addEventListener("input", () => {
+                const errorMessage = input.getAttribute('data-error-message');
+                validateField(input, errorMessage, config);
+                toggleSubmitButtonState(submitButton, inputs, config);
+            });
+        });
+
+        toggleSubmitButtonState(submitButton, inputs, config);
     });
 }
 
+// Функция для очистки ошибок валидации и сброса состояния кнопки
 export function clearValidation(form, config) {
-    const inputs = form.querySelectorAll(config.inputSelector);
+    const inputs = Array.from(form.querySelectorAll(config.inputSelector));
+    const submitButton = form.querySelector(config.submitButtonSelector);
+
     inputs.forEach((input) => {
         const errorElement = document.querySelector(`#${input.name}-error`);
         if (errorElement) {
-            errorElement.textContent = "";
-            errorElement.classList.remove(config.errorClass);
+            clearError(input, errorElement, config);
         }
-        input.classList.remove(config.inputErrorClass);
     });
 
-    const submitButton = form.querySelector(config.submitButtonSelector);
-    submitButton.disabled = true;
-    submitButton.classList.add(config.inactiveButtonClass);
+    toggleSubmitButtonState(submitButton, inputs, config);
 }
+
+
+
+
+
+
+
+
+
 
 
 

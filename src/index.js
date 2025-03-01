@@ -180,7 +180,7 @@ function handleAvatarFormSubmit(evt) {
     toggleButtonState(submitButtons.avatar, true);
     updateAvatar(avatarUrl)
         .then(updatedUserData => {
-            profileImageElement.src = updatedUserData.avatar;
+            avatarImageElement.src = updatedUserData.avatar;
             closePopup(avatarPopup);
         })
         .catch(error => {

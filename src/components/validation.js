@@ -1,32 +1,9 @@
-// Функция для валидации поля с использованием встроенных свойств input.validity
 export function validateField(input, errorMessage, config) {
     const errorElement = document.querySelector(`#${input.name}-error`);
-    const value = input.value.trim(); // Убираем лишние пробелы
+    const value = input.value.trim();
 
-    // Проверка на обязательность заполнения
-    if (input.validity.valueMissing) {
-        errorElement.textContent = "Вы пропустили это поле.";
-        showError(input, errorElement, config);
-        return false;
-    }
-
-    // Проверка на минимальную длину
-    if (input.validity.tooShort) {
-        errorElement.textContent = `Минимальное количество символов: ${input.minLength}. Длина текста сейчас: ${value.length} символов.`;
-        showError(input, errorElement, config);
-        return false;
-    }
-
-    // Проверка на максимальную длину
-    if (input.validity.tooLong) {
-        errorElement.textContent = `Максимальная длина: ${input.maxLength} символов. Длина текста сейчас: ${value.length} символов.`;
-        showError(input, errorElement, config);
-        return false;
-    }
-
-    // Проверка на соответствие регулярному выражению patternMismatch
-    if (input.validity.patternMismatch) {
-        errorElement.textContent = errorMessage || "Некорректный ввод.";
+    if (!input.validity.valid) {
+        errorElement.textContent = input.validity.patternMismatch ? errorMessage : input.validationMessage;
         showError(input, errorElement, config);
         return false;
     }
@@ -89,6 +66,7 @@ export function clearValidation(form, config) {
 
     toggleSubmitButtonState(submitButton, inputs, config);
 }
+
 
 
 
